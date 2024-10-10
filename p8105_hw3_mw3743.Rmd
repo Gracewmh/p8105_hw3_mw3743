@@ -109,12 +109,12 @@ ny_noaa_cleaned_df =
     year = year(date) ,
     month = month(date),
     day = day(date)
-  ) |> view()
-  
+  ) 
 ```
-For snowfall, what are the most commonly observed values? Why?
+- For snowfall, what are the most commonly observed values? Why?
+  - For snowfall, the  most commonly observed value are "NA" or zero for it is not common the be snowy alot in New York.
 
-2. Make a two-panel plot showing the average max temperature in January and in July in each station across years. Is there any observable / interpretable structure? Any outliers?
+2. Make a two-panel plot showing the average max temperature in January and in July in each station across years.
 ```{r q1.2  two-panel plot showing the average max temperature in January and in July }
 ny_noaa_cleaned_df |>
   filter(month %in% c(1, 7)) |>
@@ -140,7 +140,8 @@ ny_noaa_cleaned_df |>
   theme(legend.position = "bottom")
   
 ```
-
+ - Is there any observable / interpretable structure? Any outliers?
+  - Yes. The plot shows that July has higher average maximum temperatures than January over the years, which is expected. There is no big change in temperature trends over time, which suggests stable patterns for these months. However, there are some unusual points, especially in January, where temperatures drop much lower than the others. This might mean there were very cold days or maybe data mistakes. In July, there are fewer unusual points, but one or two cooler days stand out. These unusual points should be checked further to see if they are correct.
 
 3. Make a two-panel plot showing 
 (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); 
@@ -176,3 +177,6 @@ ggp_tmax_tmin + ggp_snwd_yr
 
 
 ```
+
+# Question 2
+
