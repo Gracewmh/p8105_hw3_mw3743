@@ -261,10 +261,32 @@ accel_df |>
 ```
 - Comment on these items: 
 This box plot shows the age distributions for men and women in different education categories. For both men and women, those with "more than high school" seem to have a slightly younger age range compared to the other two education levels. The median ages for "high school equivalent" are a bit higher for females whild for man ages for "high school equivalent" are a bit lower.
+
+## 2.3 Total activity variable
+Using your tidied dataset, aggregate across minutes to create a total activity variable for each participant. Plot these total activities (y-axis) against age (x-axis); your plot should compare men to women and have separate panels for each education level. Include a trend line or a smooth to illustrate differences. Comment on your plot.
 ```{r}
-
+accel_df |>  
+  mutate(education = factor(education, levels = c("less than high school", 
+                                                  "high school equivalent", 
+                                                  "more than high school"))
+         ) |>
+  # Create a total activity variable for each participant
+  group_by(seqn, sex, age, education) |>
+  summarize(total_activities = sum(mims_value, na.rm = TRUE))|>
+  # Age-total_activity plot compare men to women 
+  ggplot(aes(x = age, y=total_activities, color = sex)) + 
+  geom_point(alpha=.3) +
+  # Include a trend line or a smooth to illustrate differences
+  geom_smooth(se = FALSE) +
+  # Have separate panels for each education level
+  facet_grid(. ~ education)+ 
+  labs(title = "Total Activity vs. Age by Sex and Education Level",
+       x = "Age",
+       y = "Total Activity") +
+  scale_color_brewer(palette = "Set1")+
+  theme_minimal()
 ```
-
+- Comments: This plot shows total activity levels by age for men and women across three education levels. In the "less than high school" group, activity decreases with age, especially for men. The "high school equivalent" group has more ups and downs in activity, while the "more than high school" group shows steadier activity across ages. Women generally have slightly higher activity in younger ages across all levels. Among "high school equivalent" and "more than high school" group, women consistantly have more daily activity than men across all ages.
 
 
 
