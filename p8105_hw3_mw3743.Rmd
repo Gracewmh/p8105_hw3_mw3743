@@ -9,7 +9,7 @@ output: github_document
 library(tidyverse)
 library(patchwork)
 library(ggridges)
-
+library(hexbin)
 knitr::opts_chunk$set(
   fig.width = 6,
   fig.asp = .6,
@@ -44,7 +44,14 @@ ny_noaa|>
 ny_noaa|>
   dim()
 ```
+```{r Initial numeric explorations of id ,message = FALSE}
+ ny_noaa |>
+  group_by(id) |> 
+  summarize(
+    n_obs = n())|> 
+  arrange(n_obs)
 
+```
 
 ```{r Initial numeric explorations of prcp ,message = FALSE}
  ny_noaa |>
@@ -90,11 +97,82 @@ ny_noaa_df = ny_noaa |>
 This dataset has 7 variables recording 2595176 entries.The data records different cities' weather information, including key variables like date, precipitation and snow condition, snow day, maxium and mininum temperature at that day.After EDA, we find tha 
 precipitation and snow are very skewed distribution; any formal analyses involving them as a predictor or outcome might be influenced by this fact. It’s important to note that the vast majority of days have no precipitation or snow. Meanwhile, examining the relatively few days have very high precipitation and snow might be helpful.
 
-```{r }
+## Answer questions
 
+1. Do some data cleaning. Create separate variables for year, month, and day. Ensure observations for temperature, precipitation, and snowfall are given in reasonable units. 
 
+```{r q1.1 data cleaning}
+ny_noaa_cleaned_df =
+  ny_noaa_df |> # already change the variable type of tin and tmax in EDA steps.
+  drop_na(prcp) |>
+  mutate(
+    year = year(date) ,
+    month = month(date),
+    day = day(date)
+  ) |> view()
+  
+```
+For snowfall, what are the most commonly observed values? Why?
+
+2. Make a two-panel plot showing the average max temperature in January and in July in each station across years. Is there any observable / interpretable structure? Any outliers?
+```{r q1.2  two-panel plot showing the average max temperature in January and in July }
+ny_noaa_cleaned_df |>
+  filter(month %in% c(1, 7)) |>
+  group_by(id, year, month)|>
+  summarize(
+    mean_tmax = mean(tmax, na.rm = TRUE)) |>
+  mutate(
+    month_name = case_match(
+      month,
+      1 ~ "January",
+      7 ~ "July"
+    )  ) |>
+  ggplot(aes(x = year, y = mean_tmax)) + 
+  geom_point(alpha = .3) + 
+  geom_line()+ 
+  facet_grid(. ~ month_name)+
+  labs(
+    x = "Year", 
+    y = "Mean Maximum Temp (C)",
+    title = "Average Max Temperature in January and in July in Each Station Across Years",
+  ) + 
+  theme_minimal() + 
+  theme(legend.position = "bottom")
+  
 ```
 
+
+3. Make a two-panel plot showing 
+(i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); 
+(ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
+
 ```{r}
+ggp_tmax_tmin = 
+ny_noaa_cleaned_df |> 
+  drop_na(tmax, tmin) |>
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_hex(alpha = .3)+
+  labs(
+    x = "Minimum Temperature (°F)",
+    y = "Maximum Temperature (°F)",
+    title = "Relationship Between Tmax and Tmin"
+  ) +
+  theme_minimal()
+
+ggp_snwd_yr =
+  ny_noaa_cleaned_df |> 
+  filter(snwd > 0 & snwd < 100) |> 
+  ggplot(aes(x = year, y = snwd)) + 
+  geom_point(alpha = .3) + 
+  geom_smooth(se = FALSE)+
+  labs(
+    x = "Year",
+    y = "Snow Depth (mm)",
+    title = "Distribution of Snow Depth for Values Between 0 and 100 mm by Year"
+  ) +
+  theme_minimal()
+
+ggp_tmax_tmin + ggp_snwd_yr 
+
 
 ```
