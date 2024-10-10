@@ -288,14 +288,33 @@ accel_df |>
 ```
 - Comments: This plot shows total activity levels by age for men and women across three education levels. In the "less than high school" group, activity decreases with age, especially for men. The "high school equivalent" group has more ups and downs in activity, while the "more than high school" group shows steadier activity across ages. Women generally have slightly higher activity in younger ages across all levels. Among "high school equivalent" and "more than high school" group, women consistantly have more daily activity than men across all ages.
 
-
-
+## 2.4  Activity over the course of the day
+- Make a three-panel plot that shows the 24-hour activity time courses for each education level and use color to indicate sex. Including smooth trends may help identify differences.
 ```{r}
-
+accel_df |>  
+  mutate(education = factor(education, levels = c("less than high school", 
+                                                  "high school equivalent", 
+                                                  "more than high school"))
+         ) |>
+  # 24-hour activity time courses comparinng men to women 
+  group_by(minute, sex, education) |>
+  summarize(mean_activities = mean(mims_value, na.rm = TRUE))|>
+  ggplot(aes(x = minute, y=mean_activities, color = sex)) + 
+  geom_point(alpha=.3) +
+  # Include a trend line or a smooth to illustrate differences
+  geom_smooth(se = FALSE) +
+  # Have separate panels for each education level
+  facet_grid(~ education) +
+  scale_x_continuous(breaks = seq(0, 1440, by = 240), 
+                     labels = c("12 AM", "4 AM", "8 AM", "12 PM", "4 PM", "8 PM", "12 AM")) +
+  labs(title = "24-Hour Activity Time Courses by Education Level and Sex",
+       x = "Time of Day",
+       y = "Mean Activity Level") +
+  scale_color_brewer(palette = "Set1")+
+  theme_minimal()+
+  theme(legend.position = "bottom")
 ```
-
-
-
+- Describe in words any patterns or conclusions can make based on this graph: Across all three education levels, activity levels are low around midnight, increase sharply starting around 6 AM, and reach a peak around noon to 4 PM. Activity then decreases steadily in the evening, reaching low levels again by midnight. In each education category, women generally have higher activity levels than men throughout the day, with the largest differences occurring during peak activity hours. The activity patterns are similar across education levels, suggesting that daily routines are consistent regardless of education. However, the "less than high school" group shows slightly higher peaks in activity compared to the other groups. 
 
 
 
