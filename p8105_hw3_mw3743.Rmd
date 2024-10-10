@@ -179,4 +179,74 @@ ggp_tmax_tmin + ggp_snwd_yr
 ```
 
 # Question 2
+## 2.1 Load, tidy, merge the datasets
+```{r Load tidy merge the datasets}
+# Load, tidy the demographic df
+accel_demo_df =
+  read.csv("data/nhanes_covar.csv",skip = 4, na = c("NA", ".","")) |>
+  janitor::clean_names()|>
+  # exclude participants less than 21 years of age
+  filter(age >= 21)|>
+  # exclude  those with missing demographic data
+  drop_na()|>
+  # encode data with reasonable variable classes
+  mutate(
+    sex = as.character(sex),        
+    sex = case_match(
+      sex,
+      "1" ~ "male",
+      "2" ~ "female"
+    ),
+    education = as.character(education), 
+    education = case_match(
+      education,
+      "1" ~ "less than high school",
+      "2" ~ "high school equivalent",
+      "3" ~ "more than high school"
+    )
+  )
+
+# Load, tidy the Variables df
+accel_var_df =
+  read.csv("data/nhanes_accel.csv", na = c("NA", ".","")) |>
+  janitor::clean_names()|>
+  pivot_longer(
+    cols = min1:min1440, 
+    names_to = "minute",
+    values_to = 'mims_value',
+  )|>
+  mutate(minute = as.numeric(sub("min", "", minute))) 
+
+# Merge to table based on demographic df
+accel_df =
+  left_join(accel_demo_df, accel_var_df, by = "seqn")
+
+```
+
+## 2.2 Demographic table
+
+### 2.2.1 Table for the number of men and women in each education category, 
+
+
+```{r the number of men and women in each education category}
+accel_df |>  
+  group_by(sex, education) |>
+  summarize(category_count = n()/1440, .groups = "drop")|>  
+  pivot_wider(
+    names_from = education,
+    values_from  = category_count
+    ) |>
+  knitr::kable()
+
+```
+
+### 2.2.2 Visualization of the age distributions for men and women in each education category
+
+```{r}
+
+```
+- Comment on these items: 
+
+
+
 
