@@ -1,6 +1,6 @@
 ---
 title: "HW3 Visualization and EDA"
-author: "Minghui Wang" 
+author: "Minghui Wang"
 date: '`r format(Sys.time(), "%Y-%m-%d")`'
 output: github_document
 ---
@@ -28,3 +28,73 @@ scale_fill_discrete = scale_fill_viridis_d
 
 ```
 [Homework 3](https://p8105.com/homework_3.html) reinforces ideas in Visualization and [EDA](https://p8105.com/topic_visualization_and_eda.html). Here are the codes focusing on question 1-3.
+
+# Question1 
+## Import the data:
+```{r import q1 data}
+library(p8105.datasets)
+data("ny_noaa")
+```
+## EDA and descriptionn
+```{r}
+ny_noaa|>
+  head() |>
+  knitr::kable()
+
+ny_noaa|>
+  dim()
+```
+
+
+```{r Initial numeric explorations of prcp ,message = FALSE}
+ ny_noaa |>
+  ggplot(aes(x = prcp)) +
+  geom_histogram()
+```
+
+```{r Initial numeric explorations of snowday,message = FALSE}
+ ny_noaa |>
+  ggplot(aes(x = snwd)) +
+  geom_histogram()
+
+ ny_noaa |>
+   filter( snwd >= 50)|>
+  ggplot(aes(x = snwd)) +
+  geom_histogram()
+```
+
+```{r Initial numeric explorations tmax,message = FALSE}
+
+ny_noaa_df = ny_noaa |>
+  mutate(
+    tmax = as.numeric(tmax) / 10, 
+    tmin = as.numeric(tmin) / 10
+  ) 
+
+ ny_noaa_df |>
+  ggplot(aes(x = tmax)) +
+  geom_histogram()
+
+
+```
+```{r Initial numeric explorations tmin,message = FALSE}
+
+ ny_noaa_df |>
+  ggplot(aes(x = tmin)) +
+  geom_histogram()
+
+
+```
+
+## Data description
+This dataset has 7 variables recording 2595176 entries.The data records different cities' weather information, including key variables like date, precipitation and snow condition, snow day, maxium and mininum temperature at that day.After EDA, we find tha 
+precipitation and snow are very skewed distribution; any formal analyses involving them as a predictor or outcome might be influenced by this fact. It’s important to note that the vast majority of days have no precipitation or snow. Meanwhile, examining the relatively few days have very high precipitation and snow might be helpful.
+
+```{r }
+
+
+```
+
+```{r}
+
+```
