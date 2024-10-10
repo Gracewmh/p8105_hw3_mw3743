@@ -243,9 +243,36 @@ accel_df |>
 ### 2.2.2 Visualization of the age distributions for men and women in each education category
 
 ```{r}
-
+accel_df |>  
+  mutate(education = factor(education, levels = c("less than high school", 
+                                                  "high school equivalent", 
+                                                  "more than high school"))) |>
+  ggplot(aes(x = sex, y=age, fill = education)) + 
+  geom_boxplot() +
+  labs(title = "Age Distributions by Sex and Education Level",
+      x = "Sex",
+      y = "Age") +
+  scale_y_continuous(
+    limits = c(20, 85),
+    breaks = c(20,30,40,50,60,70,80)
+  )+
+  scale_fill_brewer(palette = "Set3") +
+  theme_minimal()
 ```
 - Comment on these items: 
+This box plot shows the age distributions for men and women in different education categories. For both men and women, those with "more than high school" seem to have a slightly younger age range compared to the other two education levels. The median ages for "high school equivalent" are a bit higher for females whild for man ages for "high school equivalent" are a bit lower.
+```{r}
+
+```
+
+
+
+
+```{r}
+
+```
+
+
 
 
 
