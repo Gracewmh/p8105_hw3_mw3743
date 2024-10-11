@@ -383,9 +383,38 @@ citi_2024_07_df|>
   group_by(start_station_name) |> 
   summarize(
     n_start_count = n()) |>
+  mutate(rank = dense_rank(desc(n_start_count))) |>  
+  filter(rank <= 5) |>
   arrange(desc(n_start_count)) |>
-  head(5) |>
   knitr::kable()
+  
+  
+  
+  
 ```
 In July 2024, the most popular starting stations were Pier 61 at Chelsea Piers with 163 rides, followed by University Pl & E 14 St with 155 rides, W 21 St & 6 Ave with 152 rides, West St & Chambers St with 150 rides, and W 31 St & 7 Ave with 146 rides.
+
+## 3.4 Effects of day of the week, month, and year on median ride duration
+Make a plot to investigate the effects of day of the week, month, and year on median ride duration. This plot can include one or more panels, but should facilitate comparison across all variables of interest.
+```{r}
+citi_total_df|> 
+  group_by(year, month, weekdays) |> 
+  mutate(weekdays = factor(weekdays, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")))|> 
+  summarize(
+    mean_rids = mean(duration, na.rm = TRUE)) |>
+  ggplot(aes(x = weekdays, y = mean_rids, color = month, group = interaction(year, month))) + 
+  geom_point() + 
+  geom_smooth(se = FALSE, method = "loess", span = 0.5)+
+  facet_grid(. ~ year)+
+  scale_color_brewer(palette = "Set2") +  # Improved color distinction
+  labs(
+    title = "Mean Ride Duration by Day of the Week, Month, and Year",
+    x = "Weekdays",
+    y = "Mean Ride Duration (minutes)",
+    color = "Month"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))  
+```
+In both 2020 and 2024, July has higher ride durations, especially on weekends, with the longest rides happening on Sundays. This likely reflects more leisure riding in warmer weather. January, on the other hand, has shorter and more stable ride durations across the week, probably due to colder weather and less outdoor biking activity. The trend is quite similar between the two years, but overall durations in 2020 seem a bit higher, which might mean people are taking longer rides over time. Weekdays in both months are fairly stable, suggesting consistent commuting patterns.
 
