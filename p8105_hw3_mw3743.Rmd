@@ -361,3 +361,31 @@ citi_total_df =
 ## 3.2 Import, clean, and tidy data
 Produce a reader-friendly table showing the total number of rides in each combination of year and month separating casual riders and Citi Bike members. Comment on these results.
 
+```{r}
+citi_total_df|> 
+  group_by(year, month,member_casual) |> 
+  summarize(
+    n_obs = n()) |>
+  pivot_wider(
+    names_from = member_casual,
+    values_from = n_obs
+  )|>
+  arrange(year, month) |>
+  knitr::kable()
+```
+This table shows that both casual riders and Citi Bike members take more rides in July than in January, likely due to warmer weather. From 2020 to 2024, there’s a noticeable increase in rides for both groups, especially in July. Casual rides in July more than doubled, and member rides also saw a big jump, indicating that more people are using Citi Bike over time. Members consistently have a high number of rides even in January, suggesting they use Citi Bike regularly, possibly for commuting. 
+
+## 3.3 Five most popular starting stations for July 2024
+Make a table showing the 5 most popular starting stations for July 2024; include the number of rides originating from these stations.
+
+```{r}
+citi_2024_07_df|> 
+  group_by(start_station_name) |> 
+  summarize(
+    n_start_count = n()) |>
+  arrange(desc(n_start_count)) |>
+  head(5) |>
+  knitr::kable()
+```
+In July 2024, the most popular starting stations were Pier 61 at Chelsea Piers with 163 rides, followed by University Pl & E 14 St with 155 rides, W 21 St & 6 Ave with 152 rides, West St & Chambers St with 150 rides, and W 31 St & 7 Ave with 146 rides.
+
