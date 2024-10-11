@@ -361,7 +361,7 @@ citi_total_df =
 ## 3.2 Import, clean, and tidy data
 Produce a reader-friendly table showing the total number of rides in each combination of year and month separating casual riders and Citi Bike members. Comment on these results.
 
-```{r}
+```{r,}
 citi_total_df|> 
   group_by(year, month,member_casual) |> 
   summarize(
@@ -396,7 +396,7 @@ In July 2024, the most popular starting stations were Pier 61 at Chelsea Piers w
 
 ## 3.4 Effects of day of the week, month, and year on median ride duration
 Make a plot to investigate the effects of day of the week, month, and year on median ride duration. This plot can include one or more panels, but should facilitate comparison across all variables of interest.
-```{r}
+```{r, warning = FALSE}
 citi_total_df|> 
   group_by(year, month, weekdays) |> 
   mutate(weekdays = factor(weekdays, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")))|> 
@@ -423,18 +423,24 @@ In both 2020 and 2024, July has higher ride durations, especially on weekends, w
 There were relatively few electric Citi Bikes in 2020, but many more are available now. For data in 2024, make a figure that shows the impact of month, membership status, and bike type on the distribution of ride duration.
 
 ```{r}
-citi_total_df|> 
-  filter(year == 2024)|> 
-  ggplot(aes(x = month, y = duration, fill = member_casual)) + 
-  geom_violin( alpha = 0.6) +
-  facet_grid(.~ rideable_type) + 
-  scale_fill_brewer(palette = "Set3") +
+
+citi_total_df |>
+  filter(year == 2024) |>
+  ggplot(aes(x = month, y = duration, fill = member_casual)) +
+  geom_violin(trim = TRUE, scale = "width", alpha = 0.7, adjust = 0.8) + 
+  facet_grid(. ~ rideable_type) + 
+  scale_fill_brewer(palette = "Pastel1") +
   labs(
-    title = "Impact of Month, Membership Status, and Bike Type on Ride Duration Distribution (2024)",
+    title = "Ride Duration by Month, Membership, and Bike Type (2024)",
     x = "Month",
     y = "Ride Duration (minutes)",
     fill = "Membership Status"
   ) +
-  theme_minimal()
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "top",
+  )
+
 ```
 Overall, electric bikes tend to have longer ride durations than classic bikes, especially for casual riders. Casual riders generally have longer and more varied ride durations compared to members. In January, ride durations are shorter across both bike types and membership statuses, while in July, rides are longer, especially for casual riders using classic bikes. There are also some very long rides for casual riders on electric bikes in July, which might be outliers or rides used for more recreational purposes.
