@@ -320,7 +320,7 @@ accel_df |>
 ## 3.1 Import, clean, and tidy data
 ```{r}
 # Load, tidy the demographic df
-citi_2020_01 =
+citi_2020_01_df =
   read.csv("data/citibike/Jan 2020 Citi.csv", na = c("NA", ".","")) |>
   janitor::clean_names() |>
   mutate(
@@ -328,7 +328,7 @@ citi_2020_01 =
     year = 2020
   )
 
-citi_2024_01 =
+citi_2024_01_df =
   read.csv("data/citibike/Jan 2024 Citi.csv", na = c("NA", ".","")) |>
   janitor::clean_names() |>
   mutate(
@@ -336,7 +336,7 @@ citi_2024_01 =
     year = 2024
   )
 
-citi_2020_07 =
+citi_2020_07_df =
   read.csv("data/citibike/July 2020 Citi.csv", na = c("NA", ".","")) |>
   janitor::clean_names() |>
   mutate(
@@ -344,7 +344,7 @@ citi_2020_07 =
     year = 2020
   )
 
-citi_2024_07 =
+citi_2024_07_df =
   read.csv("data/citibike/July 2024 Citi.csv", na = c("NA", ".","")) |>
   janitor::clean_names() |>
   mutate(
@@ -352,10 +352,12 @@ citi_2024_07 =
     year = 2024
   )
 
-citi_total = 
-  bind_rows(citi_2020_01, citi_2020_07,citi_2024_01, citi_2024_07)|> 
+citi_total_df = 
+  bind_rows(citi_2020_01_df, citi_2020_07_df,citi_2024_01_df, citi_2024_07_df)|> 
   relocate(month, year) |> 
   view()
 ```
 
 ## 3.2 Import, clean, and tidy data
+Produce a reader-friendly table showing the total number of rides in each combination of year and month separating casual riders and Citi Bike members. Comment on these results.
+
