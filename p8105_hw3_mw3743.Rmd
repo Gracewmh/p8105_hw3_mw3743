@@ -316,5 +316,46 @@ accel_df |>
 ```
 - Describe in words any patterns or conclusions can make based on this graph: Across all three education levels, activity levels are low around midnight, increase sharply starting around 6 AM, and reach a peak around noon to 4 PM. Activity then decreases steadily in the evening, reaching low levels again by midnight. In each education category, women generally have higher activity levels than men throughout the day, with the largest differences occurring during peak activity hours. The activity patterns are similar across education levels, suggesting that daily routines are consistent regardless of education. However, the "less than high school" group shows slightly higher peaks in activity compared to the other groups. 
 
+# Question 3
+## 3.1 Import, clean, and tidy data
+```{r}
+# Load, tidy the demographic df
+citi_2020_01 =
+  read.csv("data/citibike/Jan 2020 Citi.csv", na = c("NA", ".","")) |>
+  janitor::clean_names() |>
+  mutate(
+    month = "January",
+    year = 2020
+  )
 
+citi_2024_01 =
+  read.csv("data/citibike/Jan 2024 Citi.csv", na = c("NA", ".","")) |>
+  janitor::clean_names() |>
+  mutate(
+    month = "January",
+    year = 2024
+  )
 
+citi_2020_07 =
+  read.csv("data/citibike/July 2020 Citi.csv", na = c("NA", ".","")) |>
+  janitor::clean_names() |>
+  mutate(
+    month = "July",
+    year = 2020
+  )
+
+citi_2024_07 =
+  read.csv("data/citibike/July 2024 Citi.csv", na = c("NA", ".","")) |>
+  janitor::clean_names() |>
+  mutate(
+    month = "July",
+    year = 2024
+  )
+
+citi_total = 
+  bind_rows(citi_2020_01, citi_2020_07,citi_2024_01, citi_2024_07)|> 
+  relocate(month, year) |> 
+  view()
+```
+
+## 3.2 Import, clean, and tidy data
