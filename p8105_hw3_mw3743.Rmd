@@ -74,8 +74,8 @@ ny_noaa|>
 
 ny_noaa_df = ny_noaa |>
   mutate(
-    tmax = as.numeric(tmax) / 10, 
-    tmin = as.numeric(tmin) / 10
+    tmax = as.numeric(tmax), 
+    tmin = as.numeric(tmin)
   ) 
 
  ny_noaa_df |>
@@ -94,8 +94,7 @@ ny_noaa_df = ny_noaa |>
 ```
 
 ## Data description
-This dataset has 7 variables recording 2595176 entries.The data records different cities' weather information, including key variables like date, precipitation and snow condition, snow day, maxium and mininum temperature at that day.After EDA, we find tha 
-precipitation and snow are very skewed distribution; any formal analyses involving them as a predictor or outcome might be influenced by this fact. It’s important to note that the vast majority of days have no precipitation or snow. Meanwhile, examining the relatively few days have very high precipitation and snow might be helpful.
+This dataset has 7 variables recording 2595176 entries.The data records different cities' weather information, including key variables like date, precipitation and snow condition, snow day, maxium and mininum temperature at that day.After EDA, we find that precipitation and snow are very skewed distribution; any formal analyses involving them as a predictor or outcome might be influenced by this fact. It’s important to note that the vast majority of days have no precipitation or snow. Meanwhile, examining the relatively few days have very high precipitation and snow might be helpful.
 
 ## Answer questions
 
@@ -129,7 +128,7 @@ ny_noaa_cleaned_df |>
     )  ) |>
   ggplot(aes(x = year, y = mean_tmax)) + 
   geom_point(alpha = .3) + 
-  geom_line()+ 
+  geom_path()+ 
   facet_grid(. ~ month_name)+
   labs(
     x = "Year", 
@@ -152,7 +151,7 @@ ggp_tmax_tmin =
 ny_noaa_cleaned_df |> 
   drop_na(tmax, tmin) |>
   ggplot(aes(x = tmin, y = tmax)) + 
-  geom_hex(alpha = .3)+
+  geom_hex()+
   labs(
     x = "Minimum Temperature (°F)",
     y = "Maximum Temperature (°F)",
@@ -160,20 +159,19 @@ ny_noaa_cleaned_df |>
   ) +
   theme_minimal()
 
-ggp_snwd_yr =
+ggp_snow_yr =
   ny_noaa_cleaned_df |> 
-  filter(snwd > 0 & snwd < 100) |> 
-  ggplot(aes(x = year, y = snwd)) + 
-  geom_point(alpha = .3) + 
-  geom_smooth(se = FALSE)+
+  filter(snow > 0 & snow < 100) |> 
+  ggplot(aes(x = snow, y = as.factor(year))) + 
+  geom_density_ridges()+
   labs(
-    x = "Year",
-    y = "Snow Depth (mm)",
-    title = "Distribution of Snow Depth for Values Between 0 and 100 mm by Year"
+    x = "Snowfall",
+    y = "Year",
+    title = "Distribution of Snowfall Values Between 0 and 100 mm by Year"
   ) +
   theme_minimal()
 
-ggp_tmax_tmin + ggp_snwd_yr 
+ggp_tmax_tmin + ggp_snow_yr 
 
 
 ```
@@ -354,8 +352,7 @@ citi_2024_07_df =
 
 citi_total_df = 
   bind_rows(citi_2020_01_df, citi_2020_07_df,citi_2024_01_df, citi_2024_07_df)|> 
-  relocate(month, year) |> 
-  view()
+  relocate(month, year)
 ```
 
 ## 3.2 Import, clean, and tidy data
